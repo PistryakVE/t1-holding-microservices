@@ -31,5 +31,13 @@ public class ClientProduct {
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
+
+    public Long getClientId() {
+        return this.client != null ? this.client.getId() : null;
+    }
+
+    public Long getProductId() {
+        return this.product != null ? this.product.getId() : null;
+    }
 }
 

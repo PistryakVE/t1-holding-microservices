@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: t1HoldingCredit
+  jpa:
+    show-sql: true
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: account-service-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.trusted.packages: "org.example.dto"
+        spring.json.type.mapping: "ClientProductMessage:org.example.dto.ClientProductMessage"
+        request.timeout.ms: 30000
+        session.timeout.ms: 10000
+        heartbeat.interval.ms: 3000
+  datasource:
+    url: jdbc:postgresql://credit_db:5432/credit_db
+    username: postgres
+    password: 123
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8080
+
+kafka:
+  topics:
+    client-credit-products: client_credit_products
+logging:
+  level:
+    org.apache.kafka: WARN
+    org.springframework.kafka: INFO

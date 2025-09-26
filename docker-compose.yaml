@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # Kafka Cluster
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:5.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  # Базы данных для каждого микросервиса
+  client-db:
+    image: postgres:15
+    container_name: client_db
+    environment:
+      POSTGRES_DB: client_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5435:5432"
+    volumes:
+      - client_db_data:/var/lib/postgresql/data
+
+  account-db:
+    image: postgres:15
+    container_name: account_db
+    environment:
+      POSTGRES_DB: account_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5433:5432"
+    volumes:
+      - account_db_data:/var/lib/postgresql/data
+
+  credit-db:
+    image: postgres:15
+    container_name: credit_db
+    environment:
+      POSTGRES_DB: credit_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5434:5432"
+    volumes:
+      - credit_db_data:/var/lib/postgresql/data
+
+  # Микросервисы
+  client-processing:
+    build: ./client-processing
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://client-db:5432/client_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+    depends_on:
+      - kafka
+      - client-db
+    restart: on-failure
+
+  account-processing:
+    build: ./account-processing
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://account-db:5432/account_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+    depends_on:
+      - kafka
+      - account-db
+    restart: on-failure
+
+  credit-processing:
+    build: ./credit-processing
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://credit-db:5432/credit_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+    depends_on:
+      - kafka
+      - credit-db
+    restart: on-failure
+
+volumes:
+  client_db_data:
+  account_db_data:
+  credit_db_data:

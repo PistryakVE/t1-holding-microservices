@@ -45,5 +45,17 @@ public class Client {
 
     @Column(name = "document_suffix")
     private String documentSuffix;
+
+    public void setUserId(Long userId) {
+        if (this.user == null) {
+            this.user = new User();
+        }
+        this.user.setId(userId);
+    }
+
+    // Можно также добавить геттер
+    public Long getUserId() {
+        return this.user != null ? this.user.getId() : null;
+    }
 }
 

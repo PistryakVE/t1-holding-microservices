@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: t1Holding
+  jpa:
+    show-sql: true
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.trusted.packages: "*"
+        request.timeout.ms: 30000
+        delivery.timeout.ms: 30000
+  datasource:
+    url: jdbc:postgresql://client_db:5432/client_db
+    username: postgres
+    password: 123
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8080
+
+kafka:
+  topics:
+    client-products: client_products
+    client-credit-products: client_credit_products
+    client-cards: client_cards
