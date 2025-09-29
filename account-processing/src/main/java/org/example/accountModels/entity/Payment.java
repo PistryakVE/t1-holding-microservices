@@ -2,6 +2,7 @@ package org.example.accountModels.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.example.accountModels.enums.PaymentStatus;
 import org.example.accountModels.enums.PaymentType;
 
 import java.math.BigDecimal;
@@ -25,6 +26,9 @@ public class Payment {
     @Column(nullable = false)
     private BigDecimal amount;
 
+    @Column(name = "monthly_payment")
+    private BigDecimal monthlyPayment; // Ежемесячный платеж для кредита
+
     @Column(name = "is_credit", nullable = false)
     private Boolean isCredit;
 
@@ -34,5 +38,13 @@ public class Payment {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentType type;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status = PaymentStatus.PENDING; // Новое поле
+
+    @Column(name = "expired")
+    private Boolean expired = false; // Флаг просрочки
 }
+
 

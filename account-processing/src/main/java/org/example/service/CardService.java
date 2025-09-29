@@ -11,6 +11,8 @@ import org.example.repository.CardRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -60,5 +62,40 @@ public class CardService {
     @Transactional(readOnly = true)
     public boolean cardExists(String cardId) {
         return cardRepository.existsByCardId(cardId);
+    }
+
+    public Card findByCardId(String cardId) {
+        return cardRepository.findByCardId(cardId)
+                .orElseThrow(() -> new RuntimeException("Card not found with id: " + cardId));
+    }
+
+    public Card save(Card card) {
+        return cardRepository.save(card);
+    }
+
+    public List<Card> findByAccountId(Long accountId) {
+        return cardRepository.findByAccountId(accountId);
+    }
+
+    public List<Card> findByStatus(CardStatus status) {
+        return cardRepository.findByStatus(status);
+    }
+
+    public void blockCard(String cardId) {
+        Card card = findByCardId(cardId);
+        card.setStatus(CardStatus.BLOCKED);
+        cardRepository.save(card);
+    }
+
+    public void activateCard(String cardId) {
+        Card card = findByCardId(cardId);
+        card.setStatus(CardStatus.ACTIVE);
+        cardRepository.save(card);
+    }
+
+    public boolean isCardActive(String cardId) {
+        return cardRepository.findByCardId(cardId)
+                .map(card -> card.getStatus() == CardStatus.ACTIVE)
+                .orElse(false);
     }
 }

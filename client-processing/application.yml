@@ -27,3 +27,5 @@ kafka:
     client-products: client_products
     client-credit-products: client_credit_products
     client-cards: client_cards
+    client-transactions: client_transactions
+    client-payments: client_payments

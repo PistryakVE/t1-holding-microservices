@@ -13,7 +13,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         spring.json.trusted.packages: "org.example.dto"
-        spring.json.type.mapping: "ClientProductMessage:org.example.dto.ClientProductMessage, CardMessage:org.example.dto.CardMessage"
+        spring.json.type.mapping: "ClientProductMessage:org.example.dto.ClientProductMessage, CardCreateDto:org.example.dto.CardCreateDto, TransactionMessageDto:org.example.dto.TransactionMessageDto, PaymentMessageDto:org.example.dto.PaymentMessageDto"
         request.timeout.ms: 30000
         session.timeout.ms: 10000
         heartbeat.interval.ms: 3000
@@ -31,6 +31,8 @@ kafka:
   topics:
     client-products: client_products
     client-cards: client_cards
+    client-transactions: client_transactions
+    client-payments: client_payments
 logging:
   level:
     org.apache.kafka: WARN

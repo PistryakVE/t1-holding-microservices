@@ -1,5 +1,5 @@
 package org.example.accountModels.enums;
 
 public enum TransactionStatus {
-    ALLOWED, PROCESSING, COMPLETE, BLOCKED, CANCELLED
+    ALLOWED, PROCESSING, COMPLETED, BLOCKED, CANCELLED, FAILED, PENDING
 }

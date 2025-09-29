@@ -36,7 +36,9 @@ public class KafkaConsumerConfig {
         // Добавляем оба типа сообщений
         props.put(JsonDeserializer.TYPE_MAPPINGS,
                 "ClientProductMessage:org.example.dto.ClientProductMessage,"
-                        + "CardCreateDto:org.example.dto.CardCreateDto");
+                        + "CardCreateDto:org.example.dto.CardCreateDto,"
+                        + "TransactionMessageDto:org.example.dto.TransactionMessageDto,"
+                        + "PaymentMessageDto:org.example.dto.PaymentMessageDto");
 
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
