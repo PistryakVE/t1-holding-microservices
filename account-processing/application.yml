@@ -3,6 +3,9 @@ spring:
     name: t1HoldingAccount
   jpa:
     show-sql: true
+  aop:
+    auto: true
+    proxy-target-class: true
   kafka:
     bootstrap-servers: kafka:9092
     consumer:
@@ -33,7 +36,10 @@ kafka:
     client-cards: client_cards
     client-transactions: client_transactions
     client-payments: client_payments
+    service-logs: service_logs
 logging:
   level:
+    org.springframework.aop: DEBUG
+    org.example.aspect: TRACE
     org.apache.kafka: WARN
     org.springframework.kafka: INFO

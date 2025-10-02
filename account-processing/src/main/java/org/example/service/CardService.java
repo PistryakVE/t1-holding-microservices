@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.accountModels.entity.Account;
 import org.example.accountModels.entity.Card;
 import org.example.accountModels.enums.CardStatus;
+import org.example.aspect.annotation.LogDatasourceError;
 import org.example.dto.CardCreateDto;
 import org.example.repository.AccountRepository;
 import org.example.repository.CardRepository;
@@ -21,6 +22,7 @@ public class CardService {
     private final CardRepository cardRepository;
     private final AccountRepository accountRepository;
 
+    @LogDatasourceError(level = LogDatasourceError.LogLevel.ERROR)
     @Transactional
     public Card createCard(CardCreateDto cardCreateDto) {
         log.info("Creating card for account ID: {}", cardCreateDto.getAccountId());
@@ -53,46 +55,57 @@ public class CardService {
         return savedCard;
     }
 
+    @LogDatasourceError(level = LogDatasourceError.LogLevel.WARNING)
     @Transactional(readOnly = true)
     public Card getCardById(Long cardId) {
         return cardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("Card not found with ID: " + cardId));
     }
 
+    @LogDatasourceError(level = LogDatasourceError.LogLevel.WARNING)
     @Transactional(readOnly = true)
     public boolean cardExists(String cardId) {
         return cardRepository.existsByCardId(cardId);
     }
 
+    @LogDatasourceError(level = LogDatasourceError.LogLevel.WARNING)
     public Card findByCardId(String cardId) {
         return cardRepository.findByCardId(cardId)
                 .orElseThrow(() -> new RuntimeException("Card not found with id: " + cardId));
     }
 
+    @LogDatasourceError(level = LogDatasourceError.LogLevel.ERROR)
     public Card save(Card card) {
         return cardRepository.save(card);
     }
 
+    @LogDatasourceError(level = LogDatasourceError.LogLevel.WARNING)
     public List<Card> findByAccountId(Long accountId) {
         return cardRepository.findByAccountId(accountId);
     }
 
+    @LogDatasourceError(level = LogDatasourceError.LogLevel.WARNING)
     public List<Card> findByStatus(CardStatus status) {
         return cardRepository.findByStatus(status);
     }
 
+    @LogDatasourceError(level = LogDatasourceError.LogLevel.ERROR)
     public void blockCard(String cardId) {
         Card card = findByCardId(cardId);
         card.setStatus(CardStatus.BLOCKED);
         cardRepository.save(card);
+        log.info("Card {} successfully blocked", cardId);
     }
 
+    @LogDatasourceError(level = LogDatasourceError.LogLevel.ERROR)
     public void activateCard(String cardId) {
         Card card = findByCardId(cardId);
         card.setStatus(CardStatus.ACTIVE);
         cardRepository.save(card);
+        log.info("Card {} successfully activated", cardId);
     }
 
+    @LogDatasourceError(level = LogDatasourceError.LogLevel.WARNING)
     public boolean isCardActive(String cardId) {
         return cardRepository.findByCardId(cardId)
                 .map(card -> card.getStatus() == CardStatus.ACTIVE)

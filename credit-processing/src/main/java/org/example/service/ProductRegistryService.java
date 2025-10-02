@@ -1,6 +1,7 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.aspect.annotation.HttpOutcomeRequestLog;
 import org.example.creditModels.PaymentRegistry;
 import org.example.creditModels.ProductRegistry;
 import org.example.dto.ClientInfo;
@@ -9,6 +10,7 @@ import org.example.dto.CreditDecision;
 import org.example.repository.PaymentRegistryRepository;
 import org.example.repository.ProductRegistryRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,11 +20,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Map;
 
-import static java.lang.Math.pow;
-
 @Service
 @RequiredArgsConstructor
 public class ProductRegistryService {
+    private final ApplicationContext applicationContext;
 
     private final RestTemplate restTemplate;
     private final ProductRegistryRepository productRegistryRepository;
@@ -221,15 +222,24 @@ public class ProductRegistryService {
     private ClientInfo getClientInfoFromMs1ByClientId(String clientId) {
         try {
             String url = ms1ClientInfoUrl + "/" + clientId;
-            ResponseEntity<ClientInfo> response = restTemplate.getForEntity(url, ClientInfo.class);
-
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                return response.getBody();
-            } else {
-                throw new RuntimeException("Failed to get client info from MS-1, status: " + response.getStatusCode());
-            }
+            // Получаем прокси через ApplicationContext
+            ProductRegistryService proxy = applicationContext.getBean(ProductRegistryService.class);
+            return proxy.makeHttpCallWithLogging(url, clientId);
         } catch (Exception e) {
             throw new RuntimeException("MS-1 service unavailable for client_id: " + clientId, e);
+        }
+    }
+    @HttpOutcomeRequestLog
+    public ClientInfo makeHttpCallWithLogging(String url, String clientId) {
+        System.out.println("=== INSIDE makeHttpCallWithLogging ===");
+
+        ResponseEntity<ClientInfo> response = restTemplate.getForEntity(url, ClientInfo.class);
+        System.out.println("=== HTTP RESPONSE STATUS: " + response.getStatusCode() + " ===");
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return response.getBody();
+        } else {
+            throw new RuntimeException("Failed to get client info from MS-1, status: " + response.getStatusCode());
         }
     }
 }

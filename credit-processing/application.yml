@@ -1,6 +1,9 @@
 spring:
   application:
     name: t1HoldingCredit
+  aop:
+    auto: true
+    proxy-target-class: true
   jpa:
     show-sql: true
   kafka:
@@ -17,6 +20,13 @@ spring:
         request.timeout.ms: 30000
         session.timeout.ms: 10000
         heartbeat.interval.ms: 3000
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.trusted.packages: "*"
+        request.timeout.ms: 30000
+        delivery.timeout.ms: 30000
   datasource:
     url: jdbc:postgresql://credit_db:5432/credit_db
     username: postgres
@@ -30,7 +40,10 @@ server:
 kafka:
   topics:
     client-credit-products: client_credit_products
+    service-logs: service_logs
 logging:
   level:
+    org.springframework.aop: DEBUG
+    org.example.aspect: TRACE
     org.apache.kafka: WARN
     org.springframework.kafka: INFO
