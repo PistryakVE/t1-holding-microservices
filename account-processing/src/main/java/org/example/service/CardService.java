@@ -6,6 +6,7 @@ import org.example.accountModels.entity.Account;
 import org.example.accountModels.entity.Card;
 import org.example.accountModels.enums.CardStatus;
 import org.example.aspect.annotation.LogDatasourceError;
+import org.example.aspect.annotation.Metric;
 import org.example.dto.CardCreateDto;
 import org.example.repository.AccountRepository;
 import org.example.repository.CardRepository;
@@ -22,7 +23,9 @@ public class CardService {
     private final CardRepository cardRepository;
     private final AccountRepository accountRepository;
 
+
     @LogDatasourceError(level = LogDatasourceError.LogLevel.ERROR)
+    @Metric("card_creation")
     @Transactional
     public Card createCard(CardCreateDto cardCreateDto) {
         log.info("Creating card for account ID: {}", cardCreateDto.getAccountId());
@@ -68,7 +71,9 @@ public class CardService {
         return cardRepository.existsByCardId(cardId);
     }
 
+
     @LogDatasourceError(level = LogDatasourceError.LogLevel.WARNING)
+    @Metric("card_search")
     public Card findByCardId(String cardId) {
         return cardRepository.findByCardId(cardId)
                 .orElseThrow(() -> new RuntimeException("Card not found with id: " + cardId));
@@ -79,7 +84,9 @@ public class CardService {
         return cardRepository.save(card);
     }
 
+
     @LogDatasourceError(level = LogDatasourceError.LogLevel.WARNING)
+    @Metric("bulk_card_search")
     public List<Card> findByAccountId(Long accountId) {
         return cardRepository.findByAccountId(accountId);
     }
@@ -89,7 +96,9 @@ public class CardService {
         return cardRepository.findByStatus(status);
     }
 
+
     @LogDatasourceError(level = LogDatasourceError.LogLevel.ERROR)
+    @Metric("card_status_update")
     public void blockCard(String cardId) {
         Card card = findByCardId(cardId);
         card.setStatus(CardStatus.BLOCKED);

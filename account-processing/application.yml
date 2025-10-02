@@ -37,6 +37,15 @@ kafka:
     client-transactions: client_transactions
     client-payments: client_payments
     service-logs: service_logs
+
+metric:
+  execution-time:
+    limit: 3000
+
+cache-config:
+  card-cache: 600000
+  account-cache: 900000
+
 logging:
   level:
     org.springframework.aop: DEBUG
