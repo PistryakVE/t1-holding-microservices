@@ -13,6 +13,7 @@
         <module>client-processing</module>
         <module>account-processing</module>
         <module>credit-processing</module>
+        <module>aspects-spring-boot-starter</module>
     </modules>
 
     <properties>

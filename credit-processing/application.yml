@@ -41,6 +41,14 @@ kafka:
   topics:
     client-credit-products: client_credit_products
     service-logs: service_logs
+
+aspects:
+  http-request:
+    enabled: true
+    kafka-enabled: true
+    fallback-to-database: true
+    kafka-topic: "service_logs"
+
 logging:
   level:
     org.springframework.aop: DEBUG

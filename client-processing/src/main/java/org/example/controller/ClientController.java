@@ -2,7 +2,7 @@ package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.aspect.annotation.HttpIncomeRequestLog;
+import org.example.aspects.starter.annotation.HttpIncomeRequestLog;
 import org.example.dto.ClientInfoDto;
 import org.example.clientModels.entity.Client;
 import org.example.service.ClientService;

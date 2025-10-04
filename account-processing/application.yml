@@ -8,6 +8,12 @@ spring:
     proxy-target-class: true
   kafka:
     bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.trusted.packages: "org.example.dto,org.example.aspects.starter.dto"
+        spring.json.type.mapping: "ClientProductMessage:org.example.dto.ClientProductMessage, CardCreateDto:org.example.dto.CardCreateDto, TransactionMessageDto:org.example.dto.TransactionMessageDto, PaymentMessageDto:org.example.dto.PaymentMessageDto, ErrorLogMessage:org.example.aspects.starter.dto.ErrorLogMessage"
     consumer:
       group-id: account-service-group
       auto-offset-reset: earliest
@@ -38,9 +44,16 @@ kafka:
     client-payments: client_payments
     service-logs: service_logs
 
-metric:
-  execution-time:
-    limit: 3000
+aspects:
+  datasource:
+    enabled: true
+    kafka-enabled: true
+    fallback-to-database: true
+    kafka-topic: "service_logs"
+  metric:
+    enabled: false
+  cache:
+    enabled: false
 
 cache-config:
   card-cache: 600000

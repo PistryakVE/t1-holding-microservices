@@ -1,7 +1,7 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.aspect.annotation.HttpOutcomeRequestLog;
+import org.example.aspects.starter.annotation.HttpOutcomeRequestLog;
 import org.example.creditModels.PaymentRegistry;
 import org.example.creditModels.ProductRegistry;
 import org.example.dto.ClientInfo;
