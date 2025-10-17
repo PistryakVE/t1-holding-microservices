@@ -19,14 +19,6 @@ public class CardController {
     public ResponseEntity<CardCreateDto> createClientProduct(@RequestBody CardCreateDto cardCreateDto,
                                                              @RequestHeader("Authorization") String token) {
 
-        // Извлекаем роль пользователя из токена
-        String userRole = jwtService.extractRole(token);
-
-        // Проверяем, имеет ли пользователь право на создание продукта
-        if (!hasCreatePermission(userRole)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
         try {
             CardCreateDto createdCard = cardCreateService.createCard(cardCreateDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdCard);

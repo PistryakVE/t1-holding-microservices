@@ -3,6 +3,7 @@ package org.example.repository;
 import org.example.accountModels.entity.Card;
 import org.example.accountModels.enums.CardStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,4 +21,11 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     // Находим все карты по accountId
     List<Card> findByAccountId(Long accountId);
     List<Card> findByStatus(CardStatus status);
+
+    long countByStatus(String status);
+
+    long countByCardTypeAndStatus(String cardType, String status);
+
+    @Query("SELECT COUNT(c) FROM Card c WHERE c.status = 'ACTIVE'")
+    long countActiveProducts();
 }
