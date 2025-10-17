@@ -19,20 +19,20 @@ public class ClientProductController {
 
     private final ClientProductService clientProductService;
     @GetMapping
-    public ResponseEntity<List<ClientProduct>> getAllClientProducts() {
+    public ResponseEntity<List<ClientProduct>> getAllClientProducts(@RequestHeader("Authorization") String token) {
         List<ClientProduct> clientProducts = clientProductService.getAllClientProducts();
         return ResponseEntity.ok(clientProducts);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClientProduct> getClientProductById(@PathVariable Long id) {
+    public ResponseEntity<ClientProduct> getClientProductById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
         Optional<ClientProduct> clientProduct = clientProductService.getClientProductById(id);
         return clientProduct.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<ClientProduct> createClientProduct(@RequestBody ClientProduct clientProduct) {
+    public ResponseEntity<ClientProduct> createClientProduct(@RequestBody ClientProduct clientProduct, @RequestHeader("Authorization") String token) {
         try {
             ClientProduct createdClientProduct = clientProductService.createClientProduct(clientProduct);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdClientProduct);
@@ -42,7 +42,7 @@ public class ClientProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientProduct> updateClientProduct(@PathVariable Long id, @RequestBody ClientProduct clientProduct) {
+    public ResponseEntity<ClientProduct> updateClientProduct(@PathVariable Long id, @RequestBody ClientProduct clientProduct, @RequestHeader("Authorization") String token) {
         try {
             ClientProduct updatedClientProduct = clientProductService.updateClientProduct(id, clientProduct);
             return ResponseEntity.ok(updatedClientProduct);
@@ -52,7 +52,7 @@ public class ClientProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClientProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteClientProduct(@PathVariable Long id, @RequestHeader("Authorization") String token) {
         try {
             clientProductService.deleteClientProduct(id);
             return ResponseEntity.noContent().build();

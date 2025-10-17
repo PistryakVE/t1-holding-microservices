@@ -22,5 +22,4 @@ public class ClientRegistrationController {
         ClientRegistrationResponse response = clientRegistrationService.registerClient(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
 }

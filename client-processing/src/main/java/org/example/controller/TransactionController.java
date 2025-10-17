@@ -17,7 +17,7 @@ public class TransactionController {
     private final TransactionProducerService transactionProducerService;
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendTransaction(@RequestBody TransactionMessageDto transactionMessage) {
+    public ResponseEntity<String> sendTransaction(@RequestBody TransactionMessageDto transactionMessage, @RequestHeader("Authorization") String token) {
         try {
             transactionProducerService.sendTransaction(transactionMessage);
             return ResponseEntity.ok("Transaction sent successfully: " + transactionMessage.getMessageId());

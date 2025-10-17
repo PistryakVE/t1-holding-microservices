@@ -18,7 +18,7 @@ public class PaymentController {
     private final PaymentProducerService paymentProducerService;
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendPayment(@RequestBody PaymentMessageDto paymentMessage) {
+    public ResponseEntity<String> sendPayment(@RequestBody PaymentMessageDto paymentMessage, @RequestHeader("Authorization") String token) {
         try {
             paymentProducerService.sendPayment(paymentMessage);
             return ResponseEntity.ok("Payment sent successfully: " + paymentMessage.getMessageId());

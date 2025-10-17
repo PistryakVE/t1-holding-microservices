@@ -19,7 +19,8 @@ public class ClientController {
 
     @HttpIncomeRequestLog
     @GetMapping("/{id}")
-    public ResponseEntity<ClientInfoDto> getClientById(@PathVariable String id) {
+    public ResponseEntity<ClientInfoDto> getClientById(@PathVariable String id,
+                                                       @RequestHeader("Authorization") String token) {
         try {
             Client client = clientService.getClientById(id);
             ClientInfoDto clientInfo = new ClientInfoDto(client);

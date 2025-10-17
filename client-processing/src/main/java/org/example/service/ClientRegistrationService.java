@@ -12,6 +12,8 @@ import org.example.repository.BlacklistRegistryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.example.clientModels.enums.Role.CURRENT_CLIENT;
+
 @Service
 @RequiredArgsConstructor
 public class ClientRegistrationService {
@@ -39,8 +41,9 @@ public class ClientRegistrationService {
         user.setLogin(request.getLogin());
         user.setPassword(request.getPassword()); // Без шифрования для простоты
         user.setEmail(request.getEmail());
-        User savedUser = userRepository.save(user);
+        user.setRole(CURRENT_CLIENT);
 
+        User savedUser = userRepository.save(user);
         // 4. Создаем и сохраняем Client с заготовленным clientId
         Client client = new Client();
         client.setClientId(generateUniqueClientId());
